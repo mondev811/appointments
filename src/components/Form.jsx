@@ -1,5 +1,5 @@
 import {
-  Button,
+  Alert,
   Modal,
   Pressable,
   SafeAreaView,
@@ -34,13 +34,52 @@ const FormInput = ({
   );
 };
 
-export const Form = ({isVisible, onClose}) => {
+export const Form = ({isVisible, savePatient, onClose}) => {
   const [patient, setPatient] = useState('');
   const [owner, setOwner] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [date, setDate] = useState(new Date());
   const [symptoms, setSymptoms] = useState('');
+
+  const handleAppointment = () => {
+    if ([patient, owner, email, date, symptoms].includes('')) {
+      Alert.alert(
+        'Validation error',
+        'All fields are required',
+        // [
+        //   {text: 'OK', style: 'default'},
+        //   {text: 'Cancel', style: 'cancel'},
+        //   {text: 'Other text', style: 'destructive'},
+        // ]
+      );
+      return;
+    }
+
+    const newPatient = {
+      id: Date.now(),
+      patient,
+      owner,
+      email,
+      phone,
+      date,
+      symptoms,
+    };
+
+    savePatient(patients => [...patients, newPatient]);
+
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setPatient('');
+    setOwner('');
+    setEmail('');
+    setPhone('');
+    setDate(new Date());
+    setSymptoms('');
+    onClose();
+  };
 
   return (
     <Modal animationType="slide" visible={isVisible} onRequestClose={onClose}>
@@ -50,7 +89,7 @@ export const Form = ({isVisible, onClose}) => {
             New <Text style={styles.titleBold}>appointment</Text>
           </Text>
 
-          <Pressable style={styles.btnCancel} onLongPress={onClose}>
+          <Pressable style={styles.btnCancel} onLongPress={resetForm}>
             <Text style={styles.btnCancelText}>x Cancel</Text>
           </Pressable>
 
@@ -86,6 +125,12 @@ export const Form = ({isVisible, onClose}) => {
             onChangeText={setSymptoms}
             multiline={true}
           />
+
+          <Pressable
+            style={styles.btnNewAppointment}
+            onPress={handleAppointment}>
+            <Text style={styles.btnNewAppointmentText}>Add patient</Text>
+          </Pressable>
         </ScrollView>
       </SafeAreaView>
     </Modal>
@@ -144,5 +189,19 @@ const styles = StyleSheet.create({
   datePicker: {
     backgroundColor: '#FFF',
     borderRadius: 10,
+  },
+  btnNewAppointment: {
+    marginVertical: 50,
+    backgroundColor: '#F59E0B',
+    paddingVertical: 15,
+    marginHorizontal: 30,
+    borderRadius: 10,
+  },
+  btnNewAppointmentText: {
+    textAlign: 'center',
+    color: '#5827A4',
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });

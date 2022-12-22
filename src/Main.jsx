@@ -1,12 +1,20 @@
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View, FlatList} from 'react-native';
 import {Form} from './components/Form';
 
 export const Main = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [patients, setPatients] = useState([]);
+
   const newAppointmentHandler = () => {
     setModalVisible(!modalVisible);
   };
+  const renderItem = ({patient, owner, email, phone, date, symptoms}) => {
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemText}>{patient}</Text>
+    </View>;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Appointments Administrator</Text>
@@ -16,7 +24,16 @@ export const Main = () => {
         onPress={newAppointmentHandler}>
         <Text style={styles.btnTextNewAppointment}>New appointment</Text>
       </Pressable>
-      <Form isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+      <FlatList
+        data={patients}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+      <Form
+        isVisible={modalVisible}
+        savePatient={setPatients}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -50,5 +67,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     textTransform: 'uppercase',
+  },
+  itemContainer: {backgroundColor: 'red', height: 50},
+  itemText: {
+    fontSize: 8,
   },
 });

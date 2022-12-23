@@ -1,18 +1,34 @@
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View, FlatList} from 'react-native';
-import {Form} from './components/Form';
+import {Form, Patient} from './components';
+
+const initialPatients = [
+  {
+    id: Date.now(),
+    patient: 'Fluffy',
+    owner: 'Edgar',
+    email: 'ed@email.com',
+    phone: '222-222-2222',
+    date: new Date(),
+    symptoms: 'Sleeps too much.',
+  },
+  {
+    id: new Date('01/01/2000'),
+    patient: 'Rover',
+    owner: 'Lenny',
+    email: 'len@email.com',
+    phone: '333-333-3333',
+    date: new Date(),
+    symptoms: 'Eats too much',
+  },
+];
 
 export const Main = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [patients, setPatients] = useState([]);
+  const [patients, setPatients] = useState(initialPatients);
 
   const newAppointmentHandler = () => {
     setModalVisible(!modalVisible);
-  };
-  const renderItem = ({patient, owner, email, phone, date, symptoms}) => {
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemText}>{patient}</Text>
-    </View>;
   };
 
   return (
@@ -24,11 +40,17 @@ export const Main = () => {
         onPress={newAppointmentHandler}>
         <Text style={styles.btnTextNewAppointment}>New appointment</Text>
       </Pressable>
-      <FlatList
-        data={patients}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      {patients.length === 0 && (
+        <Text style={styles.noPatients}>There are no patients to display.</Text>
+      )}
+      {patients.length > 0 && (
+        <FlatList
+          style={styles.list}
+          data={patients}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => Patient(item)}
+        />
+      )}
       <Form
         isVisible={modalVisible}
         savePatient={setPatients}
@@ -60,6 +82,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 10,
+    marginBottom: 10,
   },
   btnTextNewAppointment: {
     textAlign: 'center',
@@ -68,8 +91,14 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textTransform: 'uppercase',
   },
-  itemContainer: {backgroundColor: 'red', height: 50},
-  itemText: {
-    fontSize: 8,
+
+  noPatients: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 20,
+  },
+  list: {
+    marginTop: 5,
+    marginHorizontal: 10,
   },
 });

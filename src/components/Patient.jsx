@@ -1,16 +1,7 @@
 import {Pressable, View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 
-export const Patient = ({
-  patient,
-  owner,
-  email,
-  phone,
-  date,
-  symptoms,
-  editHandler,
-  deleteHandler,
-}) => {
+export const Patient = ({item, editPatient}) => {
   const formatDate = date => {
     const newDate = new Date(date);
     const options = {
@@ -22,20 +13,25 @@ export const Patient = ({
 
     return newDate.toLocaleDateString('es-ES', options);
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Patient: </Text>
-      <Text style={styles.itemText}>{patient}</Text>
-      <Text style={styles.date}>{formatDate(date)}</Text>
+      <Text style={styles.itemText}>{item.patient}</Text>
+      <Text style={styles.date}>{formatDate(item.date)}</Text>
 
       <View style={styles.containerButtons}>
-        <Pressable style={[styles.btn, styles.btnEdit]} onPress={editHandler}>
+        <Pressable
+          style={[styles.btn, styles.btnEdit]}
+          onPress={() => {
+            editPatient(item.id);
+          }}>
           <Text style={styles.btnText}>Edit</Text>
         </Pressable>
 
         <Pressable
           style={[styles.btn, styles.btnDelete]}
-          onPress={deleteHandler}>
+          onPress={() => console.log('deleting record')}>
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>

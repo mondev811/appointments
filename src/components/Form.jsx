@@ -9,7 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 
 const FormInput = ({
@@ -34,13 +34,28 @@ const FormInput = ({
   );
 };
 
-export const Form = ({isVisible, savePatient, onClose}) => {
-  const [patient, setPatient] = useState('');
-  const [owner, setOwner] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [symptoms, setSymptoms] = useState('');
+const blankPatient = {
+  patient: '',
+  owner: '',
+  email: '',
+  phone: '',
+  date: new Date(),
+  symptoms: '',
+};
+
+export const Form = ({
+  isVisible,
+  patients = [],
+  savePatient,
+  onClose,
+  initializePatient,
+}) => {
+  const [patient, setPatient] = useState(blankPatient.patient);
+  const [owner, setOwner] = useState(blankPatient.owner);
+  const [email, setEmail] = useState(blankPatient.email);
+  const [phone, setPhone] = useState(blankPatient.phone);
+  const [date, setDate] = useState(blankPatient.date);
+  const [symptoms, setSymptoms] = useState(blankPatient.symptoms);
 
   const handleAppointment = () => {
     if ([patient, owner, email, date, symptoms].includes('')) {
@@ -66,30 +81,38 @@ export const Form = ({isVisible, savePatient, onClose}) => {
       symptoms,
     };
 
-    savePatient(patients => [...patients, newPatient]);
+    savePatient([...patients, newPatient]);
 
-    resetForm();
+    populateForm(blankPatient);
   };
 
-  const resetForm = () => {
-    setPatient('');
-    setOwner('');
-    setEmail('');
-    setPhone('');
-    setDate(new Date());
-    setSymptoms('');
+  const populateForm = patient => {
+    setPatient(patient.patient);
+    setOwner(patient.owner);
+    setEmail(patient.email);
+    setPhone(patient.phone);
+    setDate(new Date(patient.date));
+    setSymptoms(patient.symptoms);
+  };
+
+  const cancel = () => {
+    populateForm(blankPatient);
     onClose();
   };
 
+  useEffect(() => {
+    initializePatient && populateForm(initializePatient);
+  }, [initializePatient]);
+
   return (
-    <Modal animationType="slide" visible={isVisible} onRequestClose={onClose}>
+    <Modal animationType="slide" visible={isVisible} onRequestClose={cancel}>
       <SafeAreaView style={styles.container}>
         <ScrollView>
           <Text style={styles.title}>
             New <Text style={styles.titleBold}>appointment</Text>
           </Text>
 
-          <Pressable style={styles.btnCancel} onLongPress={resetForm}>
+          <Pressable style={styles.btnCancel} onLongPress={cancel}>
             <Text style={styles.btnCancelText}>x Cancel</Text>
           </Pressable>
 

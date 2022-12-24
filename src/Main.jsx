@@ -13,7 +13,7 @@ const initialPatients = [
     symptoms: 'Sleeps too much.',
   },
   {
-    id: new Date('01/01/2000'),
+    id: new Date('2022-10-01').valueOf(),
     patient: 'Rover',
     owner: 'Lenny',
     email: 'len@email.com',
@@ -26,9 +26,16 @@ const initialPatients = [
 export const Main = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [patients, setPatients] = useState(initialPatients);
+  const [patientInitForm, setPatientInitForm] = useState();
 
   const newAppointmentHandler = () => {
     setModalVisible(!modalVisible);
+  };
+
+  const editItemHandler = id => {
+    const patientToEdit = patients.find(item => item.id === id);
+    setPatientInitForm(patientToEdit);
+    setModalVisible(true);
   };
 
   return (
@@ -48,13 +55,17 @@ export const Main = () => {
           style={styles.list}
           data={patients}
           keyExtractor={item => item.id}
-          renderItem={({item}) => Patient(item)}
+          renderItem={({item}) => (
+            <Patient item={item} editPatient={editItemHandler} />
+          )}
         />
       )}
       <Form
         isVisible={modalVisible}
+        patients={patients}
         savePatient={setPatients}
         onClose={() => setModalVisible(false)}
+        initializePatient={patientInitForm}
       />
     </View>
   );

@@ -1,7 +1,7 @@
 import {Pressable, View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 
-export const Patient = ({item, editPatient}) => {
+export const Patient = ({item, editPatient, deletePatient}) => {
   const formatDate = date => {
     const newDate = new Date(date);
     const options = {
@@ -31,7 +31,7 @@ export const Patient = ({item, editPatient}) => {
 
         <Pressable
           style={[styles.btn, styles.btnDelete]}
-          onPress={() => console.log('deleting record')}>
+          onPress={() => deletePatient(item.id)}>
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>

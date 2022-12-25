@@ -38,6 +38,11 @@ export const Main = () => {
     setModalVisible(true);
   };
 
+  const deletePatient = id => {
+    newPatients = patients.filter(p => p.id !== id);
+    setPatients(newPatients);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Appointments Administrator</Text>
@@ -56,7 +61,11 @@ export const Main = () => {
           data={patients}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <Patient item={item} editPatient={editItemHandler} />
+            <Patient
+              item={item}
+              editPatient={editItemHandler}
+              deletePatient={deletePatient}
+            />
           )}
         />
       )}

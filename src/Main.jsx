@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, Text, View, FlatList} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View, FlatList} from 'react-native';
 import {Form, Patient} from './components';
 
 const initialPatients = [
@@ -39,8 +39,27 @@ export const Main = () => {
   };
 
   const deletePatient = id => {
-    newPatients = patients.filter(p => p.id !== id);
-    setPatients(newPatients);
+    Alert.alert(
+      `Are you sure you want to delete this patient?`,
+      'This action is irreversible.',
+      [
+        {
+          text: 'OK',
+          stye: 'default',
+          onPress: () => {
+            newPatients = patients.filter(p => p.id !== id);
+            setPatients(newPatients);
+          },
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => {
+            return;
+          },
+        },
+      ],
+    );
   };
 
   return (

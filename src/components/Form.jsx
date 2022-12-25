@@ -72,7 +72,7 @@ export const Form = ({
     }
 
     const newPatient = {
-      id: Date.now(),
+      id: initializePatient ? initializePatient.id : Date.now(),
       patient,
       owner,
       email,
@@ -81,9 +81,13 @@ export const Form = ({
       symptoms,
     };
 
+    patients = initializePatient
+      ? patients.filter(p => p.id !== initializePatient.id)
+      : patients;
+
     savePatient([...patients, newPatient]);
 
-    populateForm(blankPatient);
+    resetAndClose();
   };
 
   const populateForm = patient => {
@@ -95,7 +99,7 @@ export const Form = ({
     setSymptoms(patient.symptoms);
   };
 
-  const cancel = () => {
+  const resetAndClose = () => {
     populateForm(blankPatient);
     onClose();
   };
@@ -105,14 +109,17 @@ export const Form = ({
   }, [initializePatient]);
 
   return (
-    <Modal animationType="slide" visible={isVisible} onRequestClose={cancel}>
+    <Modal
+      animationType="slide"
+      visible={isVisible}
+      onRequestClose={resetAndClose}>
       <SafeAreaView style={styles.container}>
         <ScrollView>
           <Text style={styles.title}>
             New <Text style={styles.titleBold}>appointment</Text>
           </Text>
 
-          <Pressable style={styles.btnCancel} onLongPress={cancel}>
+          <Pressable style={styles.btnCancel} onLongPress={resetAndClose}>
             <Text style={styles.btnCancelText}>x Cancel</Text>
           </Pressable>
 
@@ -152,7 +159,7 @@ export const Form = ({
           <Pressable
             style={styles.btnNewAppointment}
             onPress={handleAppointment}>
-            <Text style={styles.btnNewAppointmentText}>Add patient</Text>
+            <Text style={styles.btnNewAppointmentText}>Save patient</Text>
           </Pressable>
         </ScrollView>
       </SafeAreaView>
